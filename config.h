@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#pragma once
 
 static int borderpx = 0;
 static char font[] = "monospace:size=10";
