@@ -6,7 +6,7 @@ VERSION := $(shell git describe --tags)-planet36
 
 # paths
 PREFIX ?= /usr/local
-MANPREFIX = $(PREFIX)/share/man
+MANDIR = $(PREFIX)/share/man
 
 # includes and libs
 INCS = `pkg-config --cflags fontconfig`
