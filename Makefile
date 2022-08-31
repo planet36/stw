@@ -17,15 +17,15 @@ clean:
 	rm -f stw stw.o
 
 install: all
-	mkdir -p $(DESTDIR)$(PREFIX)/bin
-	cp -f stw $(DESTDIR)$(PREFIX)/bin
-	chmod 755 $(DESTDIR)$(PREFIX)/bin/stw
+	mkdir -p $(DESTDIR)$(BINDIR)
+	cp -f stw $(DESTDIR)$(BINDIR)
+	chmod 755 $(DESTDIR)$(BINDIR)/stw
 	mkdir -p $(DESTDIR)$(MANDIR)/man1
 	sed "s/VERSION/$(VERSION)/g" < stw.1 > $(DESTDIR)$(MANDIR)/man1/stw.1
 	chmod 644 $(DESTDIR)$(MANDIR)/man1/stw.1
 
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/stw \
+	rm -f $(DESTDIR)$(BINDIR)/stw \
 		$(DESTDIR)$(MANDIR)/man1/stw.1
 
 .PHONY: all clean install uninstall
