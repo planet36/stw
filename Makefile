@@ -3,29 +3,31 @@
 
 include config.mk
 
-all: stw
+BIN = stw
+
+all: $(BIN)
 
 .c.o:
 	$(CC) $(STWCFLAGS) -c $<
 
-stw: stw.o
+$(BIN): stw.o
 	$(CC) $^ $(STWLDFLAGS) -o $@
 
 stw.o: arg.h config.h config.mk
 
 clean:
-	rm -f stw stw.o
+	rm -f $(BIN) stw.o
 
-install: all
+install: $(BIN)
 	mkdir -p $(DESTDIR)$(BINDIR)
-	cp -f stw $(DESTDIR)$(BINDIR)
-	chmod 755 $(DESTDIR)$(BINDIR)/stw
+	cp -f $(BIN) $(DESTDIR)$(BINDIR)
+	chmod 755 $(DESTDIR)$(BINDIR)/$(BIN)
 	mkdir -p $(DESTDIR)$(MANDIR)/man1
-	sed "s/VERSION/$(VERSION)/g" < stw.1 > $(DESTDIR)$(MANDIR)/man1/stw.1
-	chmod 644 $(DESTDIR)$(MANDIR)/man1/stw.1
+	sed "s/VERSION/$(VERSION)/g" < $(BIN).1 > $(DESTDIR)$(MANDIR)/man1/$(BIN).1
+	chmod 644 $(DESTDIR)$(MANDIR)/man1/$(BIN).1
 
 uninstall:
-	rm -f $(DESTDIR)$(BINDIR)/stw \
-		$(DESTDIR)$(MANDIR)/man1/stw.1
+	rm -f $(DESTDIR)$(BINDIR)/$(BIN) \
+		$(DESTDIR)$(MANDIR)/man1/$(BIN).1
 
 .PHONY: all clean install uninstall
