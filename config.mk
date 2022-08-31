@@ -11,7 +11,7 @@ MANDIR ?= $(PREFIX)/share/man
 
 # includes and libs
 INCS = `pkg-config --cflags fontconfig`
-LIBS = `pkg-config --libs fontconfig xft xrender`
+LIBS = `pkg-config --libs   xft xrender`
 
 # flags
 STWCPPFLAGS = -DVERSION=\"$(VERSION)\" -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=2 $(INCS)
