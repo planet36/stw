@@ -10,7 +10,7 @@ OBJS = $(SRCS:.c=.o)
 BIN = stw
 
 $(BIN): $(OBJS)
-	$(CC) $^ $(LDLIBS) -o $@
+	$(CC) $^ -o $@ $(LDLIBS)
 
 .c.o:
 	$(CC) $(CFLAGS) -c $<
