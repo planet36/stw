@@ -86,7 +86,7 @@ usage()
 static void
 signal_handler(int s)
 {
-	if (-1 == write(spipe[1], s == SIGCHLD ? "c" : "a", 1))
+	if (write(spipe[1], s == SIGCHLD ? "c" : "a", 1) < 0)
 		abort();
 }
 
@@ -94,7 +94,7 @@ static void
 start_cmd()
 {
 	int fds[2];
-	if (-1 == pipe(fds))
+	if (pipe(fds) < 0)
 		die("pipe:");
 
 	inputf = fdopen(fds[0], "r");
@@ -138,9 +138,9 @@ read_text()
 		}
 
 		char *line = &text[len];
-		if (NULL == fgets(line, cap - len, inputf)) {
+		if (fgets(line, cap - len, inputf) == NULL) {
 			if (feof(inputf)) {
-				if (fclose(inputf) == -1)
+				if (fclose(inputf) == EOF)
 					die("fclose subcommand output:");
 				inputf = NULL;
 				break;
@@ -228,7 +228,7 @@ reap()
 	for (;;) {
 		int wstatus;
 		pid_t p = waitpid(-1, &wstatus, cmdpid == 0 ? WNOHANG : 0);
-		if (p == -1) {
+		if (p < 0) {
 			if (cmdpid == 0 && errno == ECHILD) {
 				errno = 0;
 				break;
@@ -282,7 +282,7 @@ run()
 			fds_len--;
 		}
 
-		if (-1 == poll(fds, fds_len, -1)) {
+		if (poll(fds, fds_len, -1) < 0) {
 			if (errno == EINTR) {
 				errno = 0;
 				continue;
@@ -300,7 +300,7 @@ run()
 		// Handle signals
 		if (fds[0].revents & POLLIN) {
 			char s;
-			if (-1 == read(spipe[0], &s, 1))
+			if (read(spipe[0], &s, 1) < 0)
 				die("sigpipe read:");
 
 			if (s == 'c') {
@@ -330,7 +330,7 @@ run()
 
 				} else if (ev.type == ButtonPress) {
 					// X Window was clicked, restart subcommand
-					if (cmdpid && kill(-cmdpid, SIGTERM) == -1) {
+					if (cmdpid && (kill(-cmdpid, SIGTERM) < 0)) {
 						die("kill:");
 					}
 					alarm(0);
@@ -376,15 +376,15 @@ setup(char *font)
 {
 	// self pipe and signal handler
 
-	if (pipe(spipe) == -1)
+	if (pipe(spipe) < 0)
 		die("pipe:");
 
 	struct sigaction sa = {0};
 	sa.sa_handler = signal_handler;
 	sa.sa_flags = SA_RESTART;
 
-	if (sigaction(SIGCHLD, &sa, NULL) == -1
-	|| sigaction(SIGALRM, &sa, NULL) == -1)
+	if (sigaction(SIGCHLD, &sa, NULL) < 0 ||
+	    sigaction(SIGALRM, &sa, NULL) < 0)
 		die("sigaction:");
 
 	// xlib and xft
