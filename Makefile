@@ -11,7 +11,7 @@ all: $(BIN)
 	$(CC) $(CFLAGS) -c $<
 
 $(BIN): stw.o
-	$(CC) $^ $(LDFLAGS) -o $@
+	$(CC) $^ $(LDLIBS) -o $@
 
 stw.o: arg.h config.h config.mk
 
