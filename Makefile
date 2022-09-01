@@ -13,7 +13,7 @@ $(BIN): $(OBJS)
 	$(CC) $^ -o $@ $(LDLIBS)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CPPFLAGS) $(DEPFLAGS) $(CFLAGS) -c $<
 
 $(OBJS): config.mk
 
