@@ -16,5 +16,5 @@ LIBS = `pkg-config --libs   xft xrender`
 # flags
 CPPFLAGS += -DVERSION=\"$(VERSION)\" $(INCS)
 DEPFLAGS += -MMD -MP
-CFLAGS += -std=c99 -pedantic -Wall -Wno-shadow -Wno-sign-compare $(CPPFLAGS)
+CFLAGS += -std=c99 -pedantic -Wall -Wno-shadow -Wno-sign-compare
 LDLIBS += $(LIBS)
