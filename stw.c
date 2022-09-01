@@ -77,7 +77,7 @@ static void
 usage()
 {
 	die(
-"usage: stw [-Vt] [-x pos] [-y pos] [-X pos] [-Y pos] [-a align]\n"
+"usage: stw [-Vht] [-x pos] [-y pos] [-X pos] [-Y pos] [-a align]\n"
 "           [-f foreground] [-b background] [-F font] [-B borderpx]\n"
 "           [-p period] [-A alpha] command [arg ...]"
 	);
@@ -516,6 +516,10 @@ main(int argc, char *argv[])
 	ARGBEGIN {
 	case 'V':
 		printf("%s " VERSION "\n", argv0);
+		return 0;
+		break;
+	case 'h':
+		usage();
 		return 0;
 		break;
 	case 'x':
