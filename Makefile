@@ -16,7 +16,7 @@ $(BIN): stw.o
 stw.o: arg.h config.h config.mk
 
 clean:
-	rm -f $(BIN) stw.o
+	@$(RM) --verbose -- $(BIN) stw.o
 
 install: $(BIN)
 	mkdir -p "$(DESTDIR)$(BINDIR)"
@@ -27,7 +27,7 @@ install: $(BIN)
 	chmod 644 "$(DESTDIR)$(MANDIR)/man1/$(BIN).1"
 
 uninstall:
-	rm -f "$(DESTDIR)$(BINDIR)/$(BIN)" \
+	@$(RM) "$(DESTDIR)$(BINDIR)/$(BIN)" \
 		"$(DESTDIR)$(MANDIR)/man1/$(BIN).1"
 
 .PHONY: all clean install uninstall
