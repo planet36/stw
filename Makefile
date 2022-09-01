@@ -17,9 +17,19 @@ $(BIN): $(OBJS)
 
 $(OBJS): arg.h config.h config.mk
 
+options:
+	@echo $(BIN) build options:
+	@echo "CPPFLAGS = $(CPPFLAGS)"
+	@echo "DEPFLAGS = $(DEPFLAGS)"
+	@echo "CFLAGS  = $(CFLAGS)"
+	@echo "LDLIBS  = $(LDLIBS)"
+	@echo "CC      = $(CC)"
+
 clean:
 	@$(RM) --verbose -- $(BIN) $(OBJS)
 
+dist:
+	git archive --prefix $(BIN)-$(VERSION)/ HEAD | xz > $(BIN)-$(VERSION).tar.xz
 
 install: $(BIN)
 	mkdir -p "$(DESTDIR)$(BINDIR)"
@@ -33,4 +43,7 @@ uninstall:
 	@$(RM) "$(DESTDIR)$(BINDIR)/$(BIN)" \
 		"$(DESTDIR)$(MANDIR)/man1/$(BIN).1"
 
-.PHONY: clean install uninstall
+lint:
+	clang-tidy --quiet $(SRCS) -- $(CPPFLAGS) $(CFLAGS) $(LDLIBS)
+
+.PHONY: options clean dist install uninstall lint
