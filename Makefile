@@ -12,8 +12,6 @@ BIN = stw
 $(BIN): $(OBJS)
 	$(CC) $^ $(LDLIBS) -o $@
 
-all: $(BIN)
-
 .c.o:
 	$(CC) $(CFLAGS) -c $<
 
@@ -35,4 +33,4 @@ uninstall:
 	@$(RM) "$(DESTDIR)$(BINDIR)/$(BIN)" \
 		"$(DESTDIR)$(MANDIR)/man1/$(BIN).1"
 
-.PHONY: all clean install uninstall
+.PHONY: clean install uninstall
