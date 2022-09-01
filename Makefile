@@ -3,6 +3,10 @@
 
 include config.mk
 
+SRCS = $(wildcard *.c)
+DEPS = $(SRCS:.c=.d)
+OBJS = $(SRCS:.c=.o)
+
 BIN = stw
 
 all: $(BIN)
