@@ -14,13 +14,14 @@ all: $(BIN)
 .c.o:
 	$(CC) $(CFLAGS) -c $<
 
-$(BIN): stw.o
+$(BIN): $(OBJS)
 	$(CC) $^ $(LDLIBS) -o $@
 
-stw.o: arg.h config.h config.mk
+$(OBJS): arg.h config.h config.mk
 
 clean:
-	@$(RM) --verbose -- $(BIN) stw.o
+	@$(RM) --verbose -- $(BIN) $(OBJS)
+
 
 install: $(BIN)
 	mkdir -p "$(DESTDIR)$(BINDIR)"
