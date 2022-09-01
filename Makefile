@@ -8,10 +8,10 @@ BIN = stw
 all: $(BIN)
 
 .c.o:
-	$(CC) $(STWCFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 $(BIN): stw.o
-	$(CC) $^ $(STWLDFLAGS) -o $@
+	$(CC) $^ $(LDFLAGS) -o $@
 
 stw.o: arg.h config.h config.mk
 
