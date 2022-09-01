@@ -12,7 +12,7 @@ BIN = stw
 $(BIN): $(OBJS)
 	$(CC) $^ -o $@ $(LDLIBS)
 
-.c.o:
+%.o: %.c
 	$(CC) $(CFLAGS) -c $<
 
 $(OBJS): config.mk
