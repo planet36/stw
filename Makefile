@@ -15,7 +15,7 @@ $(BIN): $(OBJS)
 .c.o:
 	$(CC) $(CFLAGS) -c $<
 
-$(OBJS): arg.h config.h config.mk
+$(OBJS): config.mk
 
 options:
 	@echo $(BIN) build options:
@@ -47,3 +47,5 @@ lint:
 	clang-tidy --quiet $(SRCS) -- $(CPPFLAGS) $(CFLAGS) $(LDLIBS)
 
 .PHONY: options clean dist install uninstall lint
+
+-include $(DEPS)
