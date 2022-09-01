@@ -14,6 +14,6 @@ INCS = `pkg-config --cflags fontconfig`
 LIBS = `pkg-config --libs   xft xrender`
 
 # flags
-CPPFLAGS += -DVERSION=\"$(VERSION)\" -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=2 $(INCS)
+CPPFLAGS += -DVERSION=\"$(VERSION)\" $(INCS)
 CFLAGS += -std=c99 -pedantic -Wall -Wno-shadow -Wno-sign-compare $(CPPFLAGS)
 LDLIBS += $(LIBS)
