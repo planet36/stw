@@ -132,7 +132,7 @@ read_text()
 			// buffer must have sufficient capacity to
 			// store delimeter string, \n and \0 in one read
 			cap = cap ? cap * 2 : INITIAL_CAPACITY;
-			text = realloc(text, cap);
+			text = (char*)realloc(text, cap);
 			if (text == NULL)
 				die("realloc:");
 		}
