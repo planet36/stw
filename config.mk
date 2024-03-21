@@ -1,7 +1,7 @@
 # stw version
 VERSION := 0.4
 
-VERSION := $(shell git describe --tags)-planet36
+VERSION := $(shell git describe --tags --abbrev=0)-planet36
 
 # Customize below to fit your system
 
