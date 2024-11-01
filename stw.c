@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <err.h>
 #include <errno.h>
 #include <limits.h>
 #include <poll.h>
@@ -51,36 +52,15 @@ static unsigned int screen_width, screen_height;
 static unsigned int window_width, window_height;
 static bool hidden = true;
 
-__attribute__ ((noreturn))
-static void
-die(const char *fmt, ...)
-{
-	int tmp = errno;
-	va_list ap;
-
-	va_start(ap, fmt);
-	(void)vfprintf(stderr, fmt, ap);
-	va_end(ap);
-
-	if (fmt[0] && fmt[strlen(fmt)-1] == ':') {
-		(void)fputc(' ', stderr);
-		errno = tmp;
-		perror(NULL);
-	} else {
-		(void)fputc('\n', stderr);
-	}
-
-	exit(1);
-}
-
 static void
 usage()
 {
-	die(
+	printf(
 "Usage: stw [-Vht] [-x pos] [-y pos] [-X pos] [-Y pos] [-a align]\n"
 "           [-f foreground] [-b background] [-F font] [-B borderpx]\n"
 "           [-p period] [-A alpha] command [arg ...]"
 	);
+	exit(EXIT_FAILURE);
 }
 
 static void
@@ -95,16 +75,16 @@ start_cmd()
 {
 	int fds[2];
 	if (pipe(fds) < 0)
-		die("pipe:");
+		err(EXIT_FAILURE, "pipe");
 
 	inputf = fdopen(fds[0], "r");
 	if (inputf == NULL)
-		die("fdopen:");
+		err(EXIT_FAILURE, "fdopen");
 
 	cmdpid = fork();
 	switch (cmdpid) {
 	case -1:
-		die("fork:");
+		err(EXIT_FAILURE, "fork");
 	case 0:
 		close(spipe[0]);
 		close(spipe[1]);
@@ -134,18 +114,18 @@ read_text()
 			cap = cap ? cap * 2 : INITIAL_CAPACITY;
 			text = (char*)realloc(text, cap);
 			if (text == NULL)
-				die("realloc:");
+				err(EXIT_FAILURE, "realloc");
 		}
 
 		char *line = &text[len];
 		if (fgets(line, cap - len, inputf) == NULL) {
 			if (feof(inputf)) {
 				if (fclose(inputf) == EOF)
-					die("fclose subcommand output:");
+					err(EXIT_FAILURE, "fclose");
 				inputf = NULL;
 				break;
 			} else {
-				die("fgets subcommand output:");
+				err(EXIT_FAILURE, "fgets");
 			}
 		}
 
@@ -194,7 +174,7 @@ draw()
 		XFreePixmap(dpy, drawable);
 		drawable = XCreatePixmap(dpy, root, window_width, window_height, depth);
 		if (!drawable)
-			die("cannot allocate drawable");
+			errx(EXIT_FAILURE, "cannot allocate drawable");
 		XftDrawChange(xdraw, drawable);
 	}
 	XSetForeground(dpy, xgc, xbackground.pixel);
@@ -233,7 +213,7 @@ reap()
 				errno = 0;
 				break;
 			}
-			die("waitpid:");
+			err(EXIT_FAILURE, "waitpid");
 		}
 		if (p == 0)
 			break;
@@ -287,7 +267,7 @@ run()
 				errno = 0;
 				continue;
 			}
-			die("poll:");
+			err(EXIT_FAILURE, "poll");
 		}
 
 		// Read subcommand output
@@ -301,7 +281,7 @@ run()
 		if (fds[0].revents & POLLIN) {
 			char s;
 			if (read(spipe[0], &s, 1) < 0)
-				die("sigpipe read:");
+				err(EXIT_FAILURE, "sigpipe read");
 
 			if (s == 'c') {
 				// SIGCHLD received
@@ -331,7 +311,7 @@ run()
 				} else if (ev.type == ButtonPress) {
 					// X Window was clicked, restart subcommand
 					if (cmdpid && (kill(-cmdpid, SIGTERM) < 0)) {
-						die("kill:");
+						err(EXIT_FAILURE, "kill");
 					}
 					alarm(0);
 					restart_now = true;
@@ -377,7 +357,7 @@ setup(char *font)
 	// self pipe and signal handler
 
 	if (pipe(spipe) < 0)
-		die("pipe:");
+		err(EXIT_FAILURE, "pipe");
 
 	struct sigaction sa = {0};
 	sa.sa_handler = signal_handler;
@@ -385,13 +365,13 @@ setup(char *font)
 
 	if (sigaction(SIGCHLD, &sa, NULL) < 0 ||
 	    sigaction(SIGALRM, &sa, NULL) < 0)
-		die("sigaction:");
+		err(EXIT_FAILURE, "sigaction");
 
 	// xlib and xft
 
 	dpy = XOpenDisplay(NULL);
 	if (!dpy)
-		die("cannot open display");
+		errx(EXIT_FAILURE, "cannot open display");
 
 	xfd = ConnectionNumber(dpy);
 
@@ -415,13 +395,13 @@ setup(char *font)
 	xdraw = XftDrawCreate(dpy, drawable, visual, colormap);
 	xfont = XftFontOpenName(dpy, screen, font);
 	if (!xfont)
-		die("cannot load font");
+		errx(EXIT_FAILURE, "cannot load font");
 
 	// TODO: use dedicated color variables instead of array
 	if (!XftColorAllocName(dpy, visual, colormap, colors[0], &xforeground))
-		die("cannot allocate foreground color");
+		errx(EXIT_FAILURE, "cannot allocate foreground color");
 	if (!XftColorAllocName(dpy, visual, colormap, colors[1], &xbackground))
-		die("cannot allocate background color");
+		errx(EXIT_FAILURE, "cannot allocate background color");
 
 	// alpha blending
 	xbackground.pixel &= 0x00FFFFFF;
