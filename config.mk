@@ -12,7 +12,7 @@ MANDIR ?= $(PREFIX)/share/man
 
 # includes and libs
 INCS = `pkg-config --cflags fontconfig`
-LIBS = `pkg-config --libs   xft xrender`
+LIBS = `pkg-config --libs   xft xrender xfixes`
 
 # flags
 CPPFLAGS += -DVERSION=\"$(VERSION)\" $(INCS)
