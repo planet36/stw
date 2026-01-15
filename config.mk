@@ -15,9 +15,13 @@ INCS = `pkg-config --cflags fontconfig`
 LIBS = `pkg-config --libs   xft xrender xfixes`
 
 # flags
-CPPFLAGS += -DVERSION=\"$(VERSION)\" $(INCS)
-CPPFLAGS += -MMD -MP
-CFLAGS += -O2 \
-		  -Wno-shadow \
-		  -Wno-sign-compare
-LDLIBS += $(LIBS)
+CPPFLAGS = -MMD -MP
+CPPFLAGS += -DVERSION=\"$(VERSION)\" -D_DEFAULT_SOURCE $(INCS)
+
+CFLAGS = -std=c23
+CFLAGS += -pipe -Wall -Wextra -Wpedantic -Wfatal-errors
+CFLAGS += -O3 -flto=auto -march=native -fno-math-errno
+CFLAGS += -Wno-shadow
+CFLAGS += -Wno-sign-compare
+
+LDLIBS = $(LIBS)
