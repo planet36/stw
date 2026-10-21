@@ -173,7 +173,8 @@ draw()
 	window_height += borderpx * 2;
 
 	if (window_width != prev_mw || window_height != prev_mh) {
-		// TODO: for some reason old GC value still works after XFreePixmap call
+		// A GC is not bound to the drawable it was created with.  It stays
+		// valid with any drawable of the same root and depth.
 		XFreePixmap(dpy, drawable);
 		drawable = XCreatePixmap(dpy, root, window_width, window_height, depth);
 		if (!drawable)
