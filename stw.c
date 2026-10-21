@@ -134,7 +134,7 @@ read_text()
 
 		int llen = strlen(line);
 
-		if (line[llen - 1] == '\n') {
+		if (llen > 0 && line[llen - 1] == '\n') {
 			line[--llen] = '\0';
 			len += llen + 1;
 		} else {
