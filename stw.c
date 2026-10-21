@@ -411,7 +411,7 @@ setup(char *font)
 	unsigned char g = ((xbackground.pixel >> 8) & 0xff) * alpha;
 	unsigned char b = (xbackground.pixel & 0xff) * alpha;
 	xbackground.pixel = (r << 16) + (g << 8) + b;
-	xbackground.pixel |= (unsigned char)(0xff * alpha) << 24;
+	xbackground.pixel |= (unsigned long)(0xff * alpha) << 24;
 
 	XSetWindowAttributes swa;
 	swa.override_redirect = True;
