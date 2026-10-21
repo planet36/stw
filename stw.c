@@ -249,10 +249,12 @@ run()
 
 		bool dirty = false;
 
-		int inputfd = 0;
+		// poll() ignores a negative fd, so -1 leaves no subcommand output to wait on
+		int inputfd = -1;
 		if (inputf != NULL) {
 			inputfd = fileno(inputf);
-			// TODO: Handle fileno error
+			if (inputfd < 0)
+				err(EXIT_FAILURE, "fileno");
 		}
 
 		struct pollfd fds[] = {
@@ -261,12 +263,7 @@ run()
 			{.fd = inputfd,  .events = POLLIN}  // Subcommand output
 		};
 
-		int fds_len = LENGTH(fds);
-		if (inputfd == 0) {
-			fds_len--;
-		}
-
-		if (poll(fds, fds_len, -1) < 0) {
+		if (poll(fds, LENGTH(fds), -1) < 0) {
 			if (errno == EINTR) {
 				errno = 0;
 				continue;
