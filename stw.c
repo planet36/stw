@@ -556,7 +556,7 @@ main(int argc, char *argv[])
 		char *s = EARGF(usage());
 		char *end;
 		alpha = strtod(s, &end);
-		if (*s == '\0' || *end != '\0' || alpha < 0 || alpha > 1)
+		if (*s == '\0' || *end != '\0' || !(alpha >= 0 && alpha <= 1))
 			usage();
 	} break;
 	case 't':
