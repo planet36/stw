@@ -387,7 +387,8 @@ setup(char *font)
 		.depth = depth,
 		.class = TrueColor
 	};
-	XMatchVisualInfo(dpy, screen, vi.depth, TrueColor, &vi);
+	if (!XMatchVisualInfo(dpy, screen, vi.depth, TrueColor, &vi))
+		errx(EXIT_FAILURE, "cannot find %d-bit TrueColor visual", vi.depth);
 	Visual *visual = vi.visual;
 
 	Colormap colormap = XCreateColormap(dpy, root, visual, None);
